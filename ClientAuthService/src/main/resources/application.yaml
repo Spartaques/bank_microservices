@@ -1,0 +1,6 @@
+spring:
+  config:
+    import: configserver:http://CONFIGSERVER
+  application:
+    name: ClientAuthService
+

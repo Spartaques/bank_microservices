@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b514fe39-2c72-485c-bdf7-c0e3e133e34a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Config.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/aws.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jpa-buddy.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServiceRegistry/application.yaml" beforeDir="false" />
+    <list default="true" id="4e1437d3-be5d-4691-96ca-9e42ae73a132" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/ClientAuthService/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/application.yaml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,9 +11,9 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="2NvRavNpughKu0QEX6ovC7YQ0s5" />
+  <component name="ProjectId" id="2Nx0mIGU7YyJx3yMHRXu8pAso4m" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -29,8 +23,8 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/andrew/Desktop/Lessons/Config",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/andrew/Desktop/Lessons/bank_microservices/Config",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -38,12 +32,12 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="b514fe39-2c72-485c-bdf7-c0e3e133e34a" name="Changes" comment="" />
-      <created>1680542635088</created>
+      <changelist id="4e1437d3-be5d-4691-96ca-9e42ae73a132" name="Changes" comment="" />
+      <created>1680590582718</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1680542635088</updated>
-      <workItem from="1680542636271" duration="145000" />
+      <updated>1680590582718</updated>
+      <workItem from="1680590583753" duration="21000" />
     </task>
     <servers />
   </component>

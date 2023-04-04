@@ -1,0 +1,11 @@
+server:
+  port: 9090
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: google
+          uri: https://google.com
+          predicates:
+            - Path=*
