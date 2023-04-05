@@ -1,6 +1,7 @@
 spring:
   config:
-    import: configserver:http://CONFIGSERVER
+    import: "configserver:http://localhost:8080"
   application:
     name: ClientAuthService
 
+jwt_secret: "q*#!R**Djtyx5#dXogXV!rDVg*9tA4%b#dXogXV!rDVg*9tA4%bq*#!R**Djtyx5#dXogXV!"

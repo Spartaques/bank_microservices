@@ -5,7 +5,16 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: google
-          uri: https://google.com
+        - id: ClientAuthService
+          uri: lb://ClientAuthService
           predicates:
-            - Path=*
+            - Path=/auth/client/**
+        - id: OrderService
+          uri: lb://OrderService
+          predicates:
+            - Path=/order/**
+          filters:
+            - name: JwtClientAuth
+
+
+jwt_secret: "q*#!R**Djtyx5#dXogXV!rDVg*9tA4%b#dXogXV!rDVg*9tA4%bq*#!R**Djtyx5#dXogXV!"
