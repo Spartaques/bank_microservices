@@ -9,8 +9,10 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
 
 @Log
+@Component
 public class JwtClientAuthGatewayFilterFactory extends AbstractGatewayFilterFactory<JwtClientAuthGatewayFilterFactory.Config> {
 
     JWTUtil jwtUtil;
@@ -32,11 +34,19 @@ public class JwtClientAuthGatewayFilterFactory extends AbstractGatewayFilterFact
                     response.setStatusCode(HttpStatus.UNAUTHORIZED);
                     return response.setComplete();
                 }
-                final String token = request.getHeaders().getOrEmpty(HttpHeaders.AUTHORIZATION).get(0);
+                final String authHeader = request.getHeaders().getOrEmpty(HttpHeaders.AUTHORIZATION).get(0);
+                if(!authHeader.startsWith("Bearer ")) {
+                    response.setStatusCode(HttpStatus.BAD_REQUEST);
+                    return response.setComplete();
+                }
+                final String token = authHeader.substring(7);
                 try {
                     String subject = jwtUtil.validateTokenAndRetrieveSubject(token);
                 } catch (Exception e) {
                     log.warning("something wrong with validation token " + token);
+                    log.warning("exception " + e);
+                    response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                    return response.setComplete();
                 }
             }
             return chain.filter(exchange);

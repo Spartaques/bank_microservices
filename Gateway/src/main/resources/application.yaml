@@ -2,6 +2,8 @@ server:
   port: 9090
 
 spring:
+  application:
+    name: Gateway
   cloud:
     gateway:
       routes:
@@ -12,7 +14,7 @@ spring:
         - id: OrderService
           uri: lb://OrderService
           predicates:
-            - Path=/order/**
+            - Path=/orders/**
           filters:
             - name: JwtClientAuth
 
