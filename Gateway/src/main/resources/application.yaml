@@ -11,12 +11,13 @@ spring:
           uri: lb://ClientAuthService
           predicates:
             - Path=/auth/client/**
-        - id: OrderService
-          uri: lb://OrderService
+        - id: ApplicationService
+          uri: http://localhost:8082
           predicates:
-            - Path=/orders/**
+            - Path=/applications/**
           filters:
             - name: JwtClientAuth
+            - RewritePath=/applications(?<segment>/?.*), $\{segment}
 
 
 jwt_secret: "q*#!R**Djtyx5#dXogXV!rDVg*9tA4%b#dXogXV!rDVg*9tA4%bq*#!R**Djtyx5#dXogXV!"

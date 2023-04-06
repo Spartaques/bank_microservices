@@ -1,10 +1,10 @@
-package com.andriibashuk.orderservice;
+package com.andriibashuk.applicationservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class OrderServiceApplicationTests {
+class ApplicationServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
