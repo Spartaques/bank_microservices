@@ -47,6 +47,14 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-otel</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.opentelemetry</groupId>
+			<artifactId>opentelemetry-exporter-zipkin</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
 			<version>4.4.0</version>
@@ -124,6 +132,13 @@
 						<groupId>org.springframework.restdocs</groupId>
 						<artifactId>spring-restdocs-asciidoctor</artifactId>
 						<version>${spring-restdocs.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>io.micrometer</groupId>
+						<artifactId>micrometer-tracing-bom</artifactId>
+						<version>${micrometer-tracing.version}</version>
+						<type>pom</type>
+						<scope>import</scope>
 					</dependency>
 				</dependencies>
 			</plugin>
