@@ -1,0 +1,74 @@
+2023-04-07 17:14:25,806 INFO o.h.v.i.u.Version [background-preinit] HV000001: Hibernate Validator 8.0.0.Final
+2023-04-07 17:14:25,827 INFO o.s.b.StartupInfoLogger [restartedMain] Starting ApplicationServiceApplication using Java 20 with PID 404084 (/home/andrew/Desktop/Lessons/bank_microservices/ApplicationService/target/classes started by andrew in /home/andrew/Desktop/Lessons/bank_microservices/ConfigServer)
+2023-04-07 17:14:25,829 INFO o.s.b.SpringApplication [restartedMain] No active profile set, falling back to 1 default profile: "default"
+2023-04-07 17:14:25,849 INFO o.s.b.l.DeferredLog [restartedMain] Fetching config from server at : http://localhost:8080
+2023-04-07 17:14:25,849 INFO o.s.b.l.DeferredLog [restartedMain] Located environment: name=ApplicationService, profiles=[default], label=null, version=909d32d2b69b9fd9155ee499254a5911ce8cce14, state=null
+2023-04-07 17:14:25,853 INFO o.s.b.l.DeferredLog [restartedMain] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-04-07 17:14:25,853 INFO o.s.b.l.DeferredLog [restartedMain] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-04-07 17:14:26,301 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-04-07 17:14:26,313 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Finished Spring Data repository scanning in 8 ms. Found 0 JPA repository interfaces.
+2023-04-07 17:14:26,461 INFO o.s.c.c.s.GenericScope [restartedMain] BeanFactory id=99329e6c-3e6a-34bf-bb0b-fd3f88702636
+2023-04-07 17:14:26,906 INFO o.s.b.w.e.t.TomcatWebServer [restartedMain] Tomcat initialized with port(s): 8082 (http)
+2023-04-07 17:14:26,919 INFO o.a.j.l.DirectJDKLog [restartedMain] Initializing ProtocolHandler ["http-nio-8082"]
+2023-04-07 17:14:26,922 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting service [Tomcat]
+2023-04-07 17:14:26,922 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting Servlet engine: [Apache Tomcat/10.1.7]
+2023-04-07 17:14:26,948 INFO o.a.j.l.DirectJDKLog [restartedMain] Initializing Spring embedded WebApplicationContext
+2023-04-07 17:14:26,948 INFO o.s.b.w.s.c.ServletWebServerApplicationContext [restartedMain] Root WebApplicationContext: initialization completed in 1095 ms
+2023-04-07 17:14:27,298 INFO o.h.j.i.u.LogHelper [restartedMain] HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-04-07 17:14:27,325 INFO o.h.Version [restartedMain] HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-04-07 17:14:27,441 INFO c.z.h.HikariDataSource [restartedMain] HikariPool-1 - Starting...
+2023-04-07 17:14:27,592 INFO c.z.h.p.HikariPool [restartedMain] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@f354bee
+2023-04-07 17:14:27,593 INFO c.z.h.HikariDataSource [restartedMain] HikariPool-1 - Start completed.
+2023-04-07 17:14:27,617 INFO o.h.e.j.d.i.DialectFactoryImpl [restartedMain] HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2023-04-07 17:14:27,746 INFO o.h.e.t.j.p.i.JtaPlatformInitiator [restartedMain] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-04-07 17:14:27,751 INFO o.s.o.j.AbstractEntityManagerFactoryBean [restartedMain] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-04-07 17:14:27,815 WARN o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration [restartedMain] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-04-07 17:14:27,861 WARN o.s.b.a.s.s.UserDetailsServiceAutoConfiguration [restartedMain] 
+
+Using generated security password: 9a47efc7-4582-4356-8507-ede810e090d2
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2023-04-07 17:14:27,928 INFO o.s.s.w.DefaultSecurityFilterChain [restartedMain] Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@28c6a6d, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6600a747, org.springframework.security.web.context.SecurityContextHolderFilter@3b617518, org.springframework.security.web.header.HeaderWriterFilter@762f5f54, org.springframework.security.web.csrf.CsrfFilter@6caa85fe, org.springframework.security.web.authentication.logout.LogoutFilter@216806ff, com.andriibashuk.applicationservice.security.JwtAuthenticationFilter@15a6cead, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1f11ed5b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@68c37df5, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@44185bac, org.springframework.security.web.session.SessionManagementFilter@4f08fa25, org.springframework.security.web.access.ExceptionTranslationFilter@6da449ee, org.springframework.security.web.access.intercept.AuthorizationFilter@51271ac1]
+2023-04-07 17:14:28,806 WARN o.s.b.d.a.OptionalLiveReloadServer [restartedMain] Unable to start LiveReload server
+2023-04-07 17:14:28,920 INFO o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration [restartedMain] Eureka HTTP Client uses RestTemplate.
+2023-04-07 17:14:28,967 WARN o.s.c.l.c.LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger [restartedMain] Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2023-04-07 17:14:28,975 INFO o.s.b.a.e.w.EndpointLinksResolver [restartedMain] Exposing 1 endpoint(s) beneath base path '/actuator'
+2023-04-07 17:14:29,036 INFO o.s.c.n.e.InstanceInfoFactory [restartedMain] Setting initial instance status as: STARTING
+2023-04-07 17:14:29,056 INFO c.n.d.DiscoveryClient [restartedMain] Initializing Eureka in region us-east-1
+2023-04-07 17:14:29,059 INFO c.n.d.s.r.a.ConfigClusterResolver [restartedMain] Resolving eureka endpoints via configuration
+2023-04-07 17:14:29,071 INFO c.n.d.DiscoveryClient [restartedMain] Disable delta property : false
+2023-04-07 17:14:29,071 INFO c.n.d.DiscoveryClient [restartedMain] Single vip registry refresh property : null
+2023-04-07 17:14:29,071 INFO c.n.d.DiscoveryClient [restartedMain] Force full registry fetch : false
+2023-04-07 17:14:29,072 INFO c.n.d.DiscoveryClient [restartedMain] Application is null : false
+2023-04-07 17:14:29,072 INFO c.n.d.DiscoveryClient [restartedMain] Registered Applications size is zero : true
+2023-04-07 17:14:29,072 INFO c.n.d.DiscoveryClient [restartedMain] Application version is -1: true
+2023-04-07 17:14:29,072 INFO c.n.d.DiscoveryClient [restartedMain] Getting all instance registry info from the eureka server
+2023-04-07 17:14:29,140 INFO c.n.d.DiscoveryClient [restartedMain] The response status is 200
+2023-04-07 17:14:29,142 INFO c.n.d.DiscoveryClient [restartedMain] Starting heartbeat executor: renew interval is: 30
+2023-04-07 17:14:29,145 INFO c.n.d.InstanceInfoReplicator [restartedMain] InstanceInfoReplicator onDemand update allowed rate per min is 4
+2023-04-07 17:14:29,152 INFO c.n.d.DiscoveryClient [restartedMain] Discovery Client initialized at timestamp 1680876869148 with initial instances count: 4
+2023-04-07 17:14:29,165 INFO o.s.c.n.e.s.EurekaServiceRegistry [restartedMain] Registering application APPLICATIONSERVICE with eureka with status UP
+2023-04-07 17:14:29,166 INFO c.n.d.DiscoveryClient$3 [restartedMain] Saw local status change event StatusChangeEvent [timestamp=1680876869166, current=UP, previous=STARTING]
+2023-04-07 17:14:29,167 INFO c.n.d.DiscoveryClient [DiscoveryClient-InstanceInfoReplicator-0] DiscoveryClient_APPLICATIONSERVICE/192.168.88.206:ApplicationService:8082: registering service...
+2023-04-07 17:14:29,167 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting ProtocolHandler ["http-nio-8082"]
+2023-04-07 17:14:29,186 INFO c.n.d.DiscoveryClient [DiscoveryClient-InstanceInfoReplicator-0] DiscoveryClient_APPLICATIONSERVICE/192.168.88.206:ApplicationService:8082 - registration status: 204
+2023-04-07 17:14:29,196 INFO o.s.b.w.e.t.TomcatWebServer [restartedMain] Tomcat started on port(s): 8082 (http) with context path ''
+2023-04-07 17:14:29,197 INFO o.s.c.n.e.s.EurekaAutoServiceRegistration [restartedMain] Updating port to 8082
+2023-04-07 17:14:29,314 INFO o.s.b.StartupInfoLogger [restartedMain] Started ApplicationServiceApplication in 10.904 seconds (process running for 11.766)
+2023-04-07 17:14:29,372 INFO o.a.j.l.DirectJDKLog [RMI TCP Connection(1)-127.0.0.1] Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-04-07 17:14:29,372 INFO o.s.w.s.FrameworkServlet [RMI TCP Connection(1)-127.0.0.1] Initializing Servlet 'dispatcherServlet'
+2023-04-07 17:14:29,373 INFO o.s.w.s.FrameworkServlet [RMI TCP Connection(1)-127.0.0.1] Completed initialization in 1 ms
+2023-04-07 17:15:58,367 INFO c.a.a.c.ApplicationController [http-nio-8082-exec-1] HI MEN!
+2023-04-07 17:19:29,074 INFO c.n.d.s.r.a.ConfigClusterResolver [AsyncResolver-bootstrap-executor-0] Resolving eureka endpoints via configuration
+2023-04-07 17:21:52,657 INFO o.s.c.n.e.s.EurekaServiceRegistry [SpringApplicationShutdownHook] Unregistering application APPLICATIONSERVICE with eureka with status DOWN
+2023-04-07 17:21:52,658 INFO c.n.d.DiscoveryClient$3 [SpringApplicationShutdownHook] Saw local status change event StatusChangeEvent [timestamp=1680877312658, current=DOWN, previous=UP]
+2023-04-07 17:21:52,658 INFO c.n.d.DiscoveryClient [DiscoveryClient-InstanceInfoReplicator-0] DiscoveryClient_APPLICATIONSERVICE/192.168.88.206:ApplicationService:8082: registering service...
+2023-04-07 17:21:52,662 INFO c.n.d.DiscoveryClient [DiscoveryClient-InstanceInfoReplicator-0] DiscoveryClient_APPLICATIONSERVICE/192.168.88.206:ApplicationService:8082 - registration status: 204
+2023-04-07 17:21:53,671 INFO o.s.o.j.AbstractEntityManagerFactoryBean [SpringApplicationShutdownHook] Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-04-07 17:21:53,674 INFO c.z.h.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown initiated...
+2023-04-07 17:21:53,678 INFO c.z.h.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown completed.
+2023-04-07 17:21:53,679 INFO c.n.d.DiscoveryClient [SpringApplicationShutdownHook] Shutting down DiscoveryClient ...
+2023-04-07 17:21:56,683 INFO c.n.d.DiscoveryClient [SpringApplicationShutdownHook] Unregistering ...
+2023-04-07 17:21:56,691 INFO c.n.d.DiscoveryClient [SpringApplicationShutdownHook] DiscoveryClient_APPLICATIONSERVICE/192.168.88.206:ApplicationService:8082 - deregister  status: 200
+2023-04-07 17:21:56,702 INFO c.n.d.DiscoveryClient [SpringApplicationShutdownHook] Completed shut down of DiscoveryClient

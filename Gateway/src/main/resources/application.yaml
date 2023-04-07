@@ -11,6 +11,15 @@ spring:
           uri: lb://ClientAuthService
           predicates:
             - Path=/auth/client/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
+            - name: CircuitBreaker
+              args:
+                name: ClientAuthService
+                fallbackUri: forward:/fallback
         - id: ApplicationService
           uri: http://localhost:8082
           predicates:
@@ -18,6 +27,21 @@ spring:
           filters:
             - name: JwtClientAuth
             - RewritePath=/applications(?<segment>/?.*), $\{segment}
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
+            - name: CircuitBreaker
+              args:
+                name: ApplicationService
+                fallbackUri: forward:/fallback
+            - name: Retry
+              args:
+                retries: 3
+                methods: GET
+                backoff:
+                  firstBackoff: 50ms
+                  maxBackoff: 500ms
 
 
 jwt_secret: "q*#!R**Djtyx5#dXogXV!rDVg*9tA4%b#dXogXV!rDVg*9tA4%bq*#!R**Djtyx5#dXogXV!"
@@ -30,3 +54,18 @@ management:
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      sampahService:
+        slidingWindowSize: 10                     #unit request
+        permittedNumberOfCallsInHalfOpenState: 5  #unit request
+        failureRateThreshold: 50                  #percent
+        waitDurationInOpenState: 3000            #10 seconds
+        registerHealthIndicator: true
+  timelimiter:
+    instances:
+      sampahServie:
+        timeoutDuration: 2s
