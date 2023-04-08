@@ -28,13 +28,13 @@ public class AuthController {
         return "hello";
     }
 
-    @PostMapping("/auth/client/login")
+    @PostMapping("/login")
     public String login(@Valid @RequestBody LoginRequest request) {
         log.info("Request for login client with credentials"+request);
         return clientService.login(request.getEmail(), request.getPassword());
     }
 
-    @PostMapping("/auth/client/register")
+    @PostMapping("/register")
     public ResponseEntity<ClientResponse> register(@Valid @RequestBody RegisterClientRequest request) {
         log.info("Request for register client with data"+request);
         return new ResponseEntity<>(this.clientService.register(request.getFirstName(),

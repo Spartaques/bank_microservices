@@ -12,6 +12,7 @@ spring:
           predicates:
             - Path=/auth/client/**
           filters:
+            - RewritePath=/auth/client(?<segment>/?.*), $\{segment}
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 1
@@ -20,20 +21,56 @@ spring:
               args:
                 name: ClientAuthService
                 fallbackUri: forward:/fallback
-        - id: ApplicationService
-          uri: http://localhost:8082
+        - id: UserAuthService
+          uri: lb://UserAuthService
           predicates:
-            - Path=/applications/**
+            - Path=/auth/user/**
           filters:
-            - name: JwtClientAuth
-            - RewritePath=/applications(?<segment>/?.*), $\{segment}
+            - RewritePath=/auth/user(?<segment>/?.*), $\{segment}
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 1
                 redis-rate-limiter.burstCapacity: 1
             - name: CircuitBreaker
               args:
-                name: ApplicationService
+                name: UserAuthService
+                fallbackUri: forward:/fallback
+        - id: ApplicationServiceClient
+          uri: lb://ApplicationService
+          predicates:
+            - Path=/applications/client/**
+          filters:
+            - RewritePath=/applications/client(?<segment>/?.*), $\{segment}
+            - name: JwtClientAuth
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
+            - name: CircuitBreaker
+              args:
+                name: ApplicationServiceClient
+                fallbackUri: forward:/fallback
+            - name: Retry
+              args:
+                retries: 3
+                methods: GET
+                backoff:
+                  firstBackoff: 50ms
+                  maxBackoff: 500ms
+        - id: ApplicationServiceUser
+          uri: lb://ApplicationService
+          predicates:
+            - Path=/applications/user/**
+          filters:
+            - RewritePath=/applications/user(?<segment>/?.*), $\{segment}
+            - name: JwtUserAuth
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
+            - name: CircuitBreaker
+              args:
+                name: ApplicationServiceUser
                 fallbackUri: forward:/fallback
             - name: Retry
               args:
@@ -44,16 +81,13 @@ spring:
                   maxBackoff: 500ms
 
 
-jwt_secret: "q*#!R**Djtyx5#dXogXV!rDVg*9tA4%b#dXogXV!rDVg*9tA4%bq*#!R**Djtyx5#dXogXV!"
+client_jwt_secret: "q*#!R**Djtyx5#dXogXV!rDVg*9tA4%b#dXogXV!rDVg*9tA4%bq*#!R**Djtyx5#dXogXV!"
+user_jwt_secret: "WmqVtL38_+dX&dAS1c*-I(#ccRdZEzeX.Dy7.NDWbUq9E#1?8b/t6gw'SO0iTdA"
 
 management:
   tracing:
     sampling:
       probability: 1.0
-
-logging:
-  pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
 
 resilience4j:

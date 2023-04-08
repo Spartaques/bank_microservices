@@ -1,0 +1,7 @@
+spring:
+  config:
+    import: "configserver:http://localhost:8080"
+  application:
+    name: UserAuthService
+
+jwt_secret: "WmqVtL38_+dX&dAS1c*-I(#ccRdZEzeX.Dy7.NDWbUq9E#1?8b/t6gw'SO0iTdA"

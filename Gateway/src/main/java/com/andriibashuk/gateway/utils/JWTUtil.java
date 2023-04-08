@@ -9,10 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JWTUtil {
-    @Value("${jwt_secret}")
-    private String secret;
-
-    public DecodedJWT validateToken(String token)throws JWTVerificationException {
+    public DecodedJWT validateToken(String secret, String token)throws JWTVerificationException {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
                 .withIssuer("Andrii Bashuk")
                 .build();

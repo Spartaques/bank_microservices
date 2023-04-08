@@ -19,15 +19,15 @@ import java.util.Map;
 
 @Log
 @Component
-public class JwtClientAuthGatewayFilterFactory extends AbstractGatewayFilterFactory<JwtClientAuthGatewayFilterFactory.Config> {
+public class JwtUserAuthGatewayFilterFactory extends AbstractGatewayFilterFactory<JwtUserAuthGatewayFilterFactory.Config> {
 
-    @Value("${client_jwt_secret}")
-    private String clientJwtSecret;
+    @Value("${user_jwt_secret}")
+    private String userJwtSecret;
 
     JWTUtil jwtUtil;
     RouterValidator routerValidator;
 
-    public JwtClientAuthGatewayFilterFactory(JWTUtil jwtUtil, RouterValidator routerValidator) {
+    public JwtUserAuthGatewayFilterFactory(JWTUtil jwtUtil, RouterValidator routerValidator) {
         super(Config.class);
         this.jwtUtil = jwtUtil;
         this.routerValidator = routerValidator;
@@ -51,7 +51,7 @@ public class JwtClientAuthGatewayFilterFactory extends AbstractGatewayFilterFact
                 final String token = authHeader.substring(7);
                 DecodedJWT jwt;
                 try {
-                    jwt = jwtUtil.validateToken(clientJwtSecret, token);
+                    jwt = jwtUtil.validateToken(userJwtSecret, token);
                 } catch (Exception e) {
                     log.warning("something wrong with validation token " + token);
                     log.warning("exception " + e);
@@ -66,7 +66,7 @@ public class JwtClientAuthGatewayFilterFactory extends AbstractGatewayFilterFact
 
                 Map<String, Claim> claims = jwt.getClaims();
                 exchange.getRequest().mutate()
-                        .header("clientId", jwt.getSubject())
+                        .header("userId", jwt.getSubject())
                         .header("firstName", claims.get("firstName").toString())
                         .header("lastName", claims.get("lastName").toString())
                         .header("age", claims.get("age").toString())
