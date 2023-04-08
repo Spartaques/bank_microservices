@@ -15,6 +15,9 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.util.List;
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,4 +57,6 @@ public class RegisterClientRequest {
     private Short age;
     @NotNull
     private User.Gender gender;
+    @NotNull
+    private List<Long> rolesIds;
 }

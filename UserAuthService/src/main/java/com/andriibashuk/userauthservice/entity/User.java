@@ -73,6 +73,15 @@ public class User implements UserDetails {
     @NotNull
     private Gender gender;
 
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
