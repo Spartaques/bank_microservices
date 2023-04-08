@@ -5,4 +5,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface ApplicationService {
     ApplicationResponse newApplication(Long clientId, Integer requestedAmount);
+
+    ApplicationResponse approve(Long applicationId, Long userId, Integer approvedAmount);
 }

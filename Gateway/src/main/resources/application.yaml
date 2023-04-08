@@ -40,7 +40,7 @@ spring:
           predicates:
             - Path=/applications/client/**
           filters:
-            - RewritePath=/applications/client(?<segment>/?.*), $\{segment}
+            - RewritePath=/applications/client(?<segment>/?.*), /client/$\{segment}
             - name: JwtClientAuth
             - name: RequestRateLimiter
               args:
@@ -62,7 +62,7 @@ spring:
           predicates:
             - Path=/applications/user/**
           filters:
-            - RewritePath=/applications/user(?<segment>/?.*), $\{segment}
+            - RewritePath=/applications/user(?<segment>/?.*), /user/$\{segment}
             - name: JwtUserAuth
             - name: RequestRateLimiter
               args:

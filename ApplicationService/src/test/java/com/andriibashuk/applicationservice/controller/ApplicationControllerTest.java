@@ -1,5 +1,6 @@
 package com.andriibashuk.applicationservice.controller;
 
+import com.andriibashuk.applicationservice.controller.client.ClientApplicationController;
 import com.andriibashuk.applicationservice.entity.Application;
 import com.andriibashuk.applicationservice.request.NewApplicationRequest;
 import com.andriibashuk.applicationservice.response.ApplicationResponse;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -23,7 +23,7 @@ class ApplicationControllerTest {
     @Test
     @DisplayName("test new application creates successfully")
     void newApplication() {
-        ApplicationController applicationController = new ApplicationController(applicationService);
+        ClientApplicationController applicationController = new ClientApplicationController(applicationService);
         ApplicationResponse applicationResponse = new ApplicationResponse(1L, 1, 1,1L, 1L, Application.Status.NEW, null, null);
         Mockito.when(applicationService.newApplication(1L,1)).thenReturn(applicationResponse);
         ResponseEntity<ApplicationResponse> applicationResponseResponseEntity = applicationController.newApplication(new NewApplicationRequest(1, 1L));

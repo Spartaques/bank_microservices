@@ -1,6 +1,8 @@
 package com.andriibashuk.applicationservice.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,15 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewApplicationRequest {
+public class ApproveApplicationRequest {
     @Min(value = 0)
     @Max(value = 100000)
     @NotNull
-    private Integer requestedAmount;
-    @Min(value = 0)
-    @Max(value = 100000)
-    @NotNull
-    // TODO: fix to user principal
-    private Long clientId;
-
+    private Integer approvedAmount;
 }

@@ -1,21 +1,24 @@
 package com.andriibashuk.applicationservice.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig {
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    public WebSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    private final ClientHeadersAuthenticationFilter clientHeadersAuthenticationFilter;
+    private final HeadersAuthenticationFilter headersAuthenticationFilter;
+    private final UserHeadersAuthenticationFilter userHeadersAuthenticationFilter;
+
+    public WebSecurityConfig(ClientHeadersAuthenticationFilter clientHeadersAuthenticationFilter, HeadersAuthenticationFilter headersAuthenticationFilter, UserHeadersAuthenticationFilter userHeadersAuthenticationFilter) {
+        this.clientHeadersAuthenticationFilter = clientHeadersAuthenticationFilter;
+        this.headersAuthenticationFilter = headersAuthenticationFilter;
+        this.userHeadersAuthenticationFilter = userHeadersAuthenticationFilter;
     }
 
     @Bean
@@ -29,10 +32,9 @@ public class WebSecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests()
-                .anyRequest()
-                .permitAll(); // create new session for each request, so memory will be cleaned
+                .addFilterBefore(headersAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(userHeadersAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(clientHeadersAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // create new session for each request, so memory will be cleaned
         return httpSecurity.build();
     }
 }
