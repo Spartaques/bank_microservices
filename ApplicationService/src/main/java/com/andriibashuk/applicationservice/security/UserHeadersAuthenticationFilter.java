@@ -15,27 +15,34 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @Log
 public class UserHeadersAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("UserHeadersAuthenticationFilter ");
         if(request.getHeader("userId") == null) {
             filterChain.doFilter(request, response);
             return;
         }
         final Long userId = Long.parseLong(request.getHeader("userId"));
         final String email = request.getHeader("email");
-        log.info("getAuthentication "+SecurityContextHolder.getContext().getAuthentication());
+        List<String> authorities = new ArrayList<>();
+        if(request.getHeader("authorities") != null) {
+            authorities = Stream.of(request.getHeader("authorities")
+                    .split(",", -1))
+                    .map(s -> s.replace("\"", ""))
+                    .collect(Collectors.toList());
+        }
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = new User(userId, email);
             List<GrantedAuthority> authorityList = new ArrayList<>();
-            authorityList.add(new SimpleGrantedAuthority("APPLICATION_APPROVE"));
+            authorities.forEach(s -> authorityList.add(new SimpleGrantedAuthority(s)));
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,"", authorityList);
-            log.info("set auth to token "+auth);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
         filterChain.doFilter(request, response);

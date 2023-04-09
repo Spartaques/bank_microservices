@@ -64,9 +64,11 @@ public class JwtUserAuthGatewayFilterFactory extends AbstractGatewayFilterFactor
                     return response.setComplete();
                 }
 
+
                 Map<String, Claim> claims = jwt.getClaims();
                 exchange.getRequest().mutate()
                         .header("userId", jwt.getSubject())
+                        .header("authorities", claims.get("authorities").toString())
                         .header("firstName", claims.get("firstName").toString())
                         .header("lastName", claims.get("lastName").toString())
                         .header("age", claims.get("age").toString())

@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@Log
 public class JWTUtil {
     @Value("${jwt_secret}")
     private String secret;
@@ -34,7 +36,7 @@ public class JWTUtil {
                 .withClaim("gender", String.valueOf(user.getGender()))
                 .withClaim("createdDate", String.valueOf(user.getCreatedDate()))
                 .withClaim("lastModifiedDate", String.valueOf(user.getLastModifiedDate()))
-                .withClaim("authorities", privileges.stream().collect(Collectors.joining(", ")))
+                .withClaim("authorities", String.join(",", privileges))
                 .withIssuedAt(date)
                 .withExpiresAt(expireDate)
                 .withIssuer("Andrii Bashuk")
