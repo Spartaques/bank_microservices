@@ -14,7 +14,7 @@ public class StateMachineListener<LoanStatus, LoanEvent> implements org.springfr
 
     @Override
     public void stateChanged(State<LoanStatus, LoanEvent> from, State<LoanStatus, LoanEvent> to) {
-
+        log.info("fromId "+from.getId() +" toId "+to.getId());
     }
 
     @Override

@@ -51,6 +51,10 @@ public class Application extends RepositoryStateMachine implements Serializable 
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    private ApplicationStatusChangeLog applicationStatusChangeLog;
+
     @Lob
     @Column(name = "state_machine_context", length = 10240)
     private byte[] stateMachineContext;

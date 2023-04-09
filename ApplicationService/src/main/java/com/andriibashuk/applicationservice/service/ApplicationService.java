@@ -1,5 +1,6 @@
 package com.andriibashuk.applicationservice.service;
 
+import com.andriibashuk.applicationservice.entity.Application;
 import com.andriibashuk.applicationservice.response.ApplicationResponse;
 import org.springframework.http.ResponseEntity;
 

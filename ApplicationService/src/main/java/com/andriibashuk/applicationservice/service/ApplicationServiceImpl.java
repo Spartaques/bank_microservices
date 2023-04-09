@@ -1,6 +1,7 @@
 package com.andriibashuk.applicationservice.service;
 
 import com.andriibashuk.applicationservice.entity.Application;
+import com.andriibashuk.applicationservice.entity.ApplicationStatusChangeLog;
 import com.andriibashuk.applicationservice.exception.ApplicationNotFoundException;
 import com.andriibashuk.applicationservice.exception.StateMachineEventNotAcceptedException;
 import com.andriibashuk.applicationservice.repository.ApplicationRepository;
@@ -46,6 +47,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        stateMachine.stop();
 
         return ApplicationResponse.builder()
                 .id(application.getId())
