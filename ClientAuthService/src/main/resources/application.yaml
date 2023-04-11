@@ -3,10 +3,14 @@ spring:
     import: "configserver:http://localhost:8080"
   application:
     name: ClientAuthService
-
+  security:
+    user:
+      name: ClientAuthService
+      password: ClientAuthService
 jwt_secret: "q*#!R**Djtyx5#dXogXV!rDVg*9tA4%b#dXogXV!rDVg*9tA4%bq*#!R**Djtyx5#dXogXV!"
 
 management:
   tracing:
     sampling:
       probability: 1.0
+

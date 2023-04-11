@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: TmService
+  config:
+    import: "configserver:http://localhost:8080"
+  kafka:
+    bootstrap-servers: "localhost:9092"
+

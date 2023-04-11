@@ -3,3 +3,10 @@ spring:
     name: ApplicationService
   config:
     import: "configserver:http://localhost:8080"
+  kafka:
+    bootstrap-servers: "localhost:9092"
+
+services:
+  ClientAuthService:
+    user: "ClientAuthService"
+    password: "ClientAuthServicePass!#@"

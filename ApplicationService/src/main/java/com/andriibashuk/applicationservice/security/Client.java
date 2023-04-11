@@ -1,19 +1,28 @@
 package com.andriibashuk.applicationservice.security;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.ZonedDateTime;
 import java.util.Collection;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 public class Client implements UserDetails {
     private Long id;
+    private String firstName;
+    private String lastName;
     private String email;
+    private String phone;
+    private ZonedDateTime createdDate;
+    private ZonedDateTime lastModifiedDate;
+    private Long createdBy;
+    private Long lastModifiedBy;
+    private Short age;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

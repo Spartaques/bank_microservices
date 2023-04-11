@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,8 +30,6 @@ public class UserHeadersAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        final Long userId = Long.parseLong(request.getHeader("userId"));
-        final String email = request.getHeader("email");
         List<String> authorities = new ArrayList<>();
         if(request.getHeader("authorities") != null) {
             authorities = Stream.of(request.getHeader("authorities")
@@ -39,7 +38,17 @@ public class UserHeadersAuthenticationFilter extends OncePerRequestFilter {
                     .collect(Collectors.toList());
         }
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = new User(userId, email);
+            UserDetails userDetails = User.builder()
+                    .id(Long.valueOf(request.getHeader("userId")))
+                    .email(request.getHeader("email"))
+                    .age(request.getHeader("age") != null ? Short.valueOf(request.getHeader("age")) : null)
+                    .firstName(request.getHeader("firstName") != null ? request.getHeader("firstName") : null)
+                    .lastName(request.getHeader("lastName") != null ? request.getHeader("lastName") : null)
+                    .createdDate(request.getHeader("createdDate") != null ? ZonedDateTime.parse(request.getHeader("createdDate").replace("\"", "")): null)
+                    .lastModifiedDate(request.getHeader("lastModifiedDate") != null ? ZonedDateTime.parse(request.getHeader("lastModifiedDate").replace("\"", "")) : null)
+                    .createdBy(request.getHeader("createdBy") != null ? Long.valueOf(request.getHeader("createdBy")) : null)
+                    .lastModifiedBy(request.getHeader("lastModifiedBy") != null ? Long.valueOf(request.getHeader("lastModifiedBy")) : null)
+                    .build();
             List<GrantedAuthority> authorityList = new ArrayList<>();
             authorities.forEach(s -> authorityList.add(new SimpleGrantedAuthority(s)));
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,"", authorityList);

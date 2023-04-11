@@ -10,6 +10,7 @@ import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -28,12 +29,14 @@ public class ClientServiceImpl implements ClientService {
         this.jwtUtil = jwtUtil;
     }
     @Override
-    public ClientResponse register(String firstName, String lastName, String email, String password, Short age, Client.Gender gender) {
+    @Transactional
+    public ClientResponse register(String firstName, String lastName, String email, String phone, String password, Short age, Client.Gender gender) {
         log.info("Starting registering client");
         Client client = new Client();
         client.setFirstName(firstName);
         client.setLastName(lastName);
         client.setEmail(email);
+        client.setPhone(phone);
         client.setAge(age);
         client.setGender(gender);
         client.setPassword(passwordEncoder.encode(password));
@@ -67,5 +70,30 @@ public class ClientServiceImpl implements ClientService {
 
         return jwtUtil.generateToken(client);
 
+    }
+
+    @Override
+    public ClientResponse getById(Long id) {
+        Optional<Client> optionalClient = clientRepository.findById(id);
+        if(optionalClient.isEmpty()) {
+            throw new ClientNotFoundException("client not found", HttpStatus.NOT_FOUND, "CLIENT_NOT_FOUND");
+        }
+
+        Client client = optionalClient.get();
+
+        return ClientResponse
+                .builder()
+                .id(client.getId())
+                .firstName(client.getFirstName())
+                .lastName(client.getLastName())
+                .email(client.getEmail())
+                .phone(client.getPhone())
+                .age(client.getAge())
+                .gender(client.getGender())
+                .createdDate(client.getCreatedDate())
+                .lastModifiedDate(client.getLastModifiedDate())
+                .lastModifiedBy(client.getLastModifiedBy())
+                .createdBy(client.getCreatedBy()).build()
+        ;
     }
 }

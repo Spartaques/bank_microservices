@@ -17,12 +17,7 @@ public class ApplicationStatusChangelogServiceImpl implements ApplicationStatusC
     }
 
     @Override
-    public void create(long applicationId, Application.Status fromStatus, Application.Status toStatus, Long userId) {
-        Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
-        if(optionalApplication.isEmpty()) {
-            throw new RuntimeException();
-        }
-        Application application = optionalApplication.get();
+    public void create(Application application, Application.Status fromStatus, Application.Status toStatus, Long userId) {
         ApplicationStatusChangeLog applicationStatusChangeLog = new ApplicationStatusChangeLog();
         applicationStatusChangeLog.setFromStatus(fromStatus);
         applicationStatusChangeLog.setToStatus(toStatus);

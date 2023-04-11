@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 @Log
 @Component
@@ -67,13 +68,14 @@ public class JwtClientAuthGatewayFilterFactory extends AbstractGatewayFilterFact
                 Map<String, Claim> claims = jwt.getClaims();
                 exchange.getRequest().mutate()
                         .header("clientId", jwt.getSubject())
-                        .header("firstName", claims.get("firstName").toString())
-                        .header("lastName", claims.get("lastName").toString())
-                        .header("age", claims.get("age").toString())
+                        .header("firstName", claims.containsKey("firstName") && !claims.get("firstName").isMissing() ? claims.get("firstName").toString() : null)
+                        .header("lastName", claims.containsKey("lastName") && !claims.get("lastName").isMissing() ? claims.get("lastName").toString() : null)
+                        .header("lastName", claims.containsKey("age") && !claims.get("age").isMissing() ? claims.get("age").toString() : null)
                         .header("email", claims.get("email").toString())
-                        .header("gender", claims.get("gender").toString())
-                        .header("createdDate", claims.get("createdDate").toString())
-                        .header("lastModifiedDate", claims.get("lastModifiedDate").toString());
+                        .header("phone", claims.get("phone").toString())
+                        .header("gender", claims.containsKey("gender") && !claims.get("gender").isMissing() ? claims.get("gender").toString() : null)
+                        .header("createdDate", claims.containsKey("createdDate") && !claims.get("createdDate").isMissing() ? claims.get("createdDate").toString() : null)
+                        .header("lastModifiedDate", claims.containsKey("lastModifiedDate") && !claims.get("lastModifiedDate").isMissing() ? claims.get("lastModifiedDate").toString() : null);
             }
             return chain.filter(exchange);
         });

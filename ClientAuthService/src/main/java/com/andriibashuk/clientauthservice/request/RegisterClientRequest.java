@@ -57,4 +57,10 @@ public class RegisterClientRequest {
     private Short age;
     @NotNull
     private Client.Gender gender;
+    @Column(length = 30, nullable = false)
+    @Length(min = 3, max = 30)
+    @NotBlank
+    @NotEmpty
+    @NotNull
+    private String phone;
 }

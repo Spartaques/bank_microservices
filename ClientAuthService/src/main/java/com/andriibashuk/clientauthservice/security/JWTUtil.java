@@ -32,6 +32,7 @@ public class JWTUtil {
                 .withClaim("lastName", client.getLastName())
                 .withClaim("age", Integer.valueOf(client.getAge()))
                 .withClaim("email", client.getEmail())
+                .withClaim("phone", client.getPhone())
                 .withClaim("gender", String.valueOf(client.getGender()))
                 .withClaim("createdDate", String.valueOf(client.getCreatedDate()))
                 .withClaim("lastModifiedDate", String.valueOf(client.getLastModifiedDate()))

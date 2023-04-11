@@ -69,13 +69,13 @@ public class JwtUserAuthGatewayFilterFactory extends AbstractGatewayFilterFactor
                 exchange.getRequest().mutate()
                         .header("userId", jwt.getSubject())
                         .header("authorities", claims.get("authorities").toString())
-                        .header("firstName", claims.get("firstName").toString())
-                        .header("lastName", claims.get("lastName").toString())
-                        .header("age", claims.get("age").toString())
+                        .header("firstName", !claims.get("firstName").isMissing() ? claims.get("firstName").toString() : null)
+                        .header("lastName", !claims.get("lastName").isMissing() ? claims.get("lastName").toString() : null)
+                        .header("age", claims.get("age") != null ? claims.get("age").toString() : null)
                         .header("email", claims.get("email").toString())
-                        .header("gender", claims.get("gender").toString())
-                        .header("createdDate", claims.get("createdDate").toString())
-                        .header("lastModifiedDate", claims.get("lastModifiedDate").toString());
+                        .header("gender", !claims.get("gender").isMissing() ? claims.get("gender").toString() : null)
+                        .header("createdDate", !claims.get("createdDate").isMissing() ? claims.get("createdDate").toString() : null)
+                        .header("lastModifiedDate", !claims.get("lastModifiedDate").isMissing()  ? claims.get("lastModifiedDate").toString() : null);
             }
             return chain.filter(exchange);
         });

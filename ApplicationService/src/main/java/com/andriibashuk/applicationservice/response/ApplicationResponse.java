@@ -1,6 +1,7 @@
 package com.andriibashuk.applicationservice.response;
 
 import com.andriibashuk.applicationservice.entity.Application;
+import com.andriibashuk.applicationservice.security.Client;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

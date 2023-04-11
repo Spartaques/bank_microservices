@@ -1,10 +1,14 @@
 package com.andriibashuk.applicationservice.statemachine.actions;
 
 import com.andriibashuk.applicationservice.entity.Application;
+import com.andriibashuk.applicationservice.kafka.ApplicationDTO;
+import com.andriibashuk.applicationservice.response.ApplicationResponse;
+import com.andriibashuk.applicationservice.security.Client;
 import com.andriibashuk.applicationservice.service.ApplicationService;
 import com.andriibashuk.applicationservice.service.ApplicationStatusChangelogService;
 import com.andriibashuk.applicationservice.service.UserService;
 import lombok.extern.java.Log;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,13 +21,28 @@ import org.springframework.stereotype.Service;
 public class Approve implements Action<Application.Status, Application.Event> {
     ApplicationStatusChangelogService applicationStatusChangelogService;
 
-    public Approve(ApplicationStatusChangelogService applicationStatusChangelogService) {
+    KafkaTemplate<String, ApplicationDTO> template;
+
+    public Approve(ApplicationStatusChangelogService applicationStatusChangelogService, KafkaTemplate template) {
         this.applicationStatusChangelogService = applicationStatusChangelogService;
+        this.template = template;
     }
 
     @Override
     public void execute(StateContext<Application.Status, Application.Event> stateContext) {
-        Long userId = UserService.authenticated() ? Long.valueOf(UserService.getUser().get().getUsername()) : null;
-        applicationStatusChangelogService.create(Long.parseLong(stateContext.getStateMachine().getId()), stateContext.getSource().getId(), stateContext.getTarget().getId(), userId);
+        Application application = (Application) stateContext.getExtendedState().getVariables().get("application");
+        Client client = (Client) stateContext.getExtendedState().getVariables().get("client");
+        applicationStatusChangelogService.create(application, stateContext.getSource().getId(), stateContext.getTarget().getId(), UserService.getUser().getId());
+        ApplicationDTO applicationDTO = ApplicationDTO.builder()
+                .id(application.getId())
+                .requestedAmount(application.getRequestedAmount())
+                .approvedAmount(application.getApprovedAmount())
+                .client(client)
+                .userId(application.getUserId())
+                .status(stateContext.getTarget().getId())
+                .createdAt(application.getCreatedAt())
+                .updatedAt(application.getUpdatedAt())
+                .build();
+        template.send("application", applicationDTO );
     }
 }

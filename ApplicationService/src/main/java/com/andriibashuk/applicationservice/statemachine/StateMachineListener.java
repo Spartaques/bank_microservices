@@ -10,55 +10,55 @@ import org.springframework.stereotype.Service;
 
 @Log
 @Service
-public class StateMachineListener<LoanStatus, LoanEvent> implements org.springframework.statemachine.listener.StateMachineListener<LoanStatus, LoanEvent> {
+public class StateMachineListener<S, E> implements org.springframework.statemachine.listener.StateMachineListener<S, E> {
 
     @Override
-    public void stateChanged(State<LoanStatus, LoanEvent> from, State<LoanStatus, LoanEvent> to) {
-        log.info("fromId "+from.getId() +" toId "+to.getId());
-    }
-
-    @Override
-    public void stateEntered(State<LoanStatus, LoanEvent> state) {
+    public void stateChanged(State<S, E> from, State<S, E> to) {
 
     }
 
     @Override
-    public void stateExited(State<LoanStatus, LoanEvent> state) {
+    public void stateEntered(State<S, E> state) {
 
     }
 
     @Override
-    public void eventNotAccepted(Message<LoanEvent> message){
+    public void stateExited(State<S, E> state) {
+
+    }
+
+    @Override
+    public void eventNotAccepted(Message<E> message){
         log.info(String.format("eventNotAccepted(%s)", message.getPayload()));
     }
 
     @Override
-    public void transition(Transition<LoanStatus, LoanEvent> transition) {
+    public void transition(Transition<S, E> transition) {
 
     }
 
     @Override
-    public void transitionStarted(Transition<LoanStatus, LoanEvent> transition) {
+    public void transitionStarted(Transition<S, E> transition) {
 
     }
 
     @Override
-    public void transitionEnded(Transition<LoanStatus, LoanEvent> transition) {
+    public void transitionEnded(Transition<S, E> transition) {
 
     }
 
     @Override
-    public void stateMachineStarted(StateMachine<LoanStatus, LoanEvent> stateMachine) {
+    public void stateMachineStarted(StateMachine<S, E> stateMachine) {
 
     }
 
     @Override
-    public void stateMachineStopped(StateMachine<LoanStatus, LoanEvent> stateMachine) {
+    public void stateMachineStopped(StateMachine<S, E> stateMachine) {
         log.info(String.format("stateMachineStopped(%s)", stateMachine.getId()));
     }
 
     @Override
-    public void stateMachineError(StateMachine<LoanStatus, LoanEvent> stateMachine, Exception exception) {
+    public void stateMachineError(StateMachine<S, E> stateMachine, Exception exception) {
         log.info(String.format("stateMachineError(id: %s, error: %s)", stateMachine.getId(), exception.getMessage()));
     }
 
@@ -68,7 +68,7 @@ public class StateMachineListener<LoanStatus, LoanEvent> implements org.springfr
     }
 
     @Override
-    public void stateContext(StateContext<LoanStatus, LoanEvent> stateContext) {
+    public void stateContext(StateContext<S, E> stateContext) {
 
     }
 }

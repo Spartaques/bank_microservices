@@ -1,5 +1,6 @@
 package com.andriibashuk.applicationservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -55,6 +56,7 @@ public class Application extends RepositoryStateMachine implements Serializable 
     @OneToOne(cascade = CascadeType.ALL)
     private ApplicationStatusChangeLog applicationStatusChangeLog;
 
+    @JsonIgnore
     @Lob
     @Column(name = "state_machine_context", length = 10240)
     private byte[] stateMachineContext;

@@ -5,21 +5,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Principal;
 import java.util.Optional;
 
 public interface UserService {
-    public static Optional<User> getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if(authentication.isAuthenticated()) {
-            Optional.of((UserDetails) authentication.getPrincipal());
-        }
-        return Optional.empty();
+    public static User getUser() {
+        return (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     public static boolean authenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         return authentication.isAuthenticated();
     }
 }

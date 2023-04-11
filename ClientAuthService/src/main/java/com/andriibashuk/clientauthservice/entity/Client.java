@@ -53,6 +53,12 @@ public class Client implements UserDetails {
     @NotNull
     @ValidEmail
     private String email;
+    @Column(length = 30, nullable = false)
+    @Length(min = 3, max = 30)
+    @NotBlank
+    @NotEmpty
+    @NotNull
+    private String phone;
     @Column(nullable = false)
     @JsonIgnore
     @NotBlank
