@@ -1,16 +1,14 @@
 package com.andriibashuk.tmservice.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.statemachine.data.RepositoryStateMachine;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Ticket extends RepositoryStateMachine implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +35,9 @@ public class Ticket extends RepositoryStateMachine implements Serializable {
     @Column(nullable = false)
     private Status status;
 
+    @Column(name = "ticket_type", nullable = false)
+    private Type type;
+
     @Column(updatable = false, columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private ZonedDateTime createdAt;
@@ -47,10 +49,11 @@ public class Ticket extends RepositoryStateMachine implements Serializable {
     @Lob
     @Column(name = "state_machine_context", length = 10240)
     private byte[] stateMachineContext;
+
     @Column(name="meta_value")
     @MapKeyJoinColumn(name="meta_key")
     @ElementCollection(fetch = FetchType.LAZY)
-    private Map<String, String> meta;
+    private Map<String, String> meta = new HashMap<>();
 
     @Override
     public String getMachineId() {
@@ -84,5 +87,8 @@ public class Ticket extends RepositoryStateMachine implements Serializable {
         MOVE_TO_COMPLETE,
         MOVE_TO_FAILED,
         MOVE_TO_OUTDATED
+    }
+    public static enum Type {
+        APPLICATION
     }
 }

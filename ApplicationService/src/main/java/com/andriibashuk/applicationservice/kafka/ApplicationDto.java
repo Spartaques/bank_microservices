@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ApplicationDTO {
+public class ApplicationDto {
     private Long id;
     private Integer requestedAmount;
     private Integer approvedAmount;

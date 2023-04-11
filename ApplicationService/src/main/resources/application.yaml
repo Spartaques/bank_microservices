@@ -5,7 +5,13 @@ spring:
     import: "configserver:http://localhost:8080"
   kafka:
     bootstrap-servers: "localhost:9092"
-
+    producer:
+      properties:
+        spring:
+          json:
+            add:
+              type:
+                headers: false
 services:
   ClientAuthService:
     user: "ClientAuthService"
