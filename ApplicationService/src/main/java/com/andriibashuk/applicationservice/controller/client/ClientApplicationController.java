@@ -3,6 +3,7 @@ package com.andriibashuk.applicationservice.controller.client;
 import com.andriibashuk.applicationservice.request.NewApplicationRequest;
 import com.andriibashuk.applicationservice.response.ApplicationResponse;
 import com.andriibashuk.applicationservice.service.ApplicationService;
+import com.andriibashuk.applicationservice.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,12 @@ public class ClientApplicationController {
 
     @PostMapping("/new")
     public ResponseEntity<ApplicationResponse> newApplication(@Valid @RequestBody NewApplicationRequest newApplicationRequest) {
-        return new ResponseEntity<>(applicationService.newApplication(newApplicationRequest.getClientId(), newApplicationRequest.getRequestedAmount()), HttpStatus.CREATED);
+        return new ResponseEntity<>(applicationService.newApplication(UserService.getClient(), newApplicationRequest.getClientId(), newApplicationRequest.getRequestedAmount()), HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/sign/{id}")
+    public ResponseEntity<ApplicationResponse> sign(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(applicationService.sign(id, UserService.getClient()), HttpStatus.OK);
     }
 }
 

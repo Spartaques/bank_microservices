@@ -6,12 +6,9 @@ spring:
   kafka:
     bootstrap-servers: "localhost:9092"
     producer:
-      properties:
-        spring:
-          json:
-            add:
-              type:
-                headers: false
+      transaction-id-prefix: "tx-"
+    consumer:
+      isolation-level: read_committed
 services:
   ClientAuthService:
     user: "ClientAuthService"

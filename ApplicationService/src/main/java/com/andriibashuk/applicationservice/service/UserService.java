@@ -1,5 +1,6 @@
 package com.andriibashuk.applicationservice.service;
 
+import com.andriibashuk.applicationservice.security.Client;
 import com.andriibashuk.applicationservice.security.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,6 +10,9 @@ import java.security.Principal;
 import java.util.Optional;
 
 public interface UserService {
+    public static Client getClient() {
+        return (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
     public static User getUser() {
         return (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }

@@ -22,8 +22,14 @@ public class UserApplicationController {
     }
 
     @PreAuthorize("hasAuthority('APPLICATION_APPROVE')")
-    @PostMapping("/approve/{id}")
+    @PatchMapping("/approve/{id}")
     public ResponseEntity<ApplicationResponse> newApplication(@PathVariable("id") Long id, @Valid @RequestBody ApproveApplicationRequest approveApplicationRequest, Principal principal) {
         return new ResponseEntity<>(applicationService.approve(id, Long.parseLong(principal.getName()), approveApplicationRequest.getApprovedAmount()), HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAuthority('APPLICATION_APPROVE')")
+    @PatchMapping("/deny/{id}")
+    public ResponseEntity<ApplicationResponse> deny(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(applicationService.deny(id), HttpStatus.OK);
     }
 }

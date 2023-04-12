@@ -1,5 +1,6 @@
 package com.andriibashuk.applicationservice.config;
 
+import jakarta.persistence.EntityManagerFactory;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -9,6 +10,7 @@ import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -17,6 +19,9 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.kafka.transaction.ChainedKafkaTransactionManager;
+import org.springframework.kafka.transaction.KafkaTransactionManager;
+import org.springframework.orm.jpa.JpaTransactionManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +30,8 @@ import java.util.Map;
 public class KafkaTopicConfig {
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
+    @Value("${spring.kafka.producer.transaction-id-prefix}")
+    private String transactionPrefix;
 
     @Bean
     public KafkaAdmin kafkaAdmin() {
@@ -38,34 +45,13 @@ public class KafkaTopicConfig {
     public NewTopic application() {
         return TopicBuilder.name("application")
                 .partitions(1)
-                .replicas(2)
+                .replicas(1)
                 .compact()
                 .build();
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<Integer, String> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<Integer,String> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
-        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
-        return factory;
-    }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<Integer, String> kafkaAutoCommitListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<Integer,String> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "application");
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        factory.setConsumerFactory(new DefaultKafkaConsumerFactory<>(props));
-        return factory;
-    }
-
-    @Bean
-    public ConsumerFactory<Integer, String> consumerFactory() {
+    public ConsumerFactory<Object, Object> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerProps());
     }
 
@@ -78,26 +64,61 @@ public class KafkaTopicConfig {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
         return props;
     }
 
     @Bean
-    public KafkaTemplate<Integer, String> kafkaTemplate() {
-        return new KafkaTemplate<Integer, String>(producerFactory());
+    public KafkaTemplate<Integer, Object> kafkaTemplateString() {
+        return new KafkaTemplate<>(producerFactory());
     }
 
     @Bean
-    public ProducerFactory<Integer, String> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(senderProps());
+    public KafkaTransactionManager<Integer, Object> kafkaTransactionManager() {
+        return new KafkaTransactionManager<>(producerFactory());
+    }
+
+
+    @Bean
+    public ProducerFactory<Integer, Object> producerFactory() {
+        DefaultKafkaProducerFactory<Integer, Object> defaultKafkaProducerFactory = new DefaultKafkaProducerFactory<>(senderProps());
+        defaultKafkaProducerFactory.setTransactionIdPrefix(transactionPrefix);
+        return defaultKafkaProducerFactory;
     }
 
     private Map<String, Object> senderProps() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(ProducerConfig.LINGER_MS_CONFIG, 10);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        props.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, transactionPrefix);
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
         //...
         return props;
+    }
+
+    @Bean
+    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
+
+    @Bean
+    public ChainedKafkaTransactionManager<Integer, Object> chainedKafkaTransactionManager(
+            KafkaTransactionManager kafkaTransactionManager,
+            JpaTransactionManager transactionManager) {
+        return new ChainedKafkaTransactionManager<>(kafkaTransactionManager, transactionManager);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<Object, Object> kafkaListenerContainerFactory(ConcurrentKafkaListenerContainerFactoryConfigurer configurer,
+                                                                                                  ConsumerFactory consumerFactory,
+                                                                                                  ChainedKafkaTransactionManager<Integer, Object> chainedKafkaTransactionManager) {
+        ConcurrentKafkaListenerContainerFactory<Object, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+        configurer.configure(factory, consumerFactory);
+        factory.getContainerProperties().setTransactionManager(chainedKafkaTransactionManager);
+        return factory;
     }
 }

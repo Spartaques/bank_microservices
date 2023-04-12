@@ -23,4 +23,5 @@ public class ApplicationDto {
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
     Client client;
+    private String sourceOfMessage;
 }

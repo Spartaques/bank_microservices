@@ -1,9 +1,7 @@
 package com.andriibashuk.applicationservice.statemachine;
 
 import com.andriibashuk.applicationservice.entity.Application;
-import com.andriibashuk.applicationservice.statemachine.actions.Approve;
-import com.andriibashuk.applicationservice.statemachine.actions.Deny;
-import com.andriibashuk.applicationservice.statemachine.actions.Sign;
+import com.andriibashuk.applicationservice.statemachine.actions.BaseAction;
 import lombok.extern.java.Log;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
@@ -22,15 +20,11 @@ public class ApplicationStateMachineConfig {
     @EnableStateMachineFactory(contextEvents = false)
     public static class LoanStateMachineConfiguration extends EnumStateMachineConfigurerAdapter<Application.Status, Application.Event> {
         private final StateMachineListener<Application.Status, Application.Event> stateMachineListener;
-        private final Approve approve;
-        private final Deny deny;
-        private final Sign sign;
+        private final BaseAction baseAction;
 
-        public LoanStateMachineConfiguration(StateMachineListener<Application.Status, Application.Event> stateMachineListener, Approve approve, Deny deny, Sign sign) {
+        public LoanStateMachineConfiguration(StateMachineListener<Application.Status, Application.Event> stateMachineListener, BaseAction baseAction) {
             this.stateMachineListener = stateMachineListener;
-            this.approve = approve;
-            this.deny = deny;
-            this.sign = sign;
+            this.baseAction = baseAction;
         }
 
         @Override
@@ -53,22 +47,22 @@ public class ApplicationStateMachineConfig {
                     .withExternal()
                     .source(Application.Status.NEW).target(Application.Status.DENIED)
                     .event(Application.Event.DENY)
-                    .action(deny)
+                    .action(baseAction)
                     .and()
                     .withExternal()
                     .source(Application.Status.NEW).target(Application.Status.APPROVED)
                     .event(Application.Event.APPROVE)
-                    .action(approve)
+                    .action(baseAction)
                     .and()
                     .withExternal()
                     .source(Application.Status.APPROVED).target(Application.Status.DENIED)
                     .event(Application.Event.DENY)
-                    .action(deny)
+                    .action(baseAction)
                     .and()
                     .withExternal()
                     .source(Application.Status.APPROVED).target(Application.Status.SIGNED)
                     .event(Application.Event.SIGN)
-                    .action(sign);
+                    .action(baseAction);
         }
     }
 }

@@ -24,7 +24,8 @@ public class Application {
     private Status status;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
-
+    private String sourceOfMessage;
+    private String changeStatus;
     private Client client;
 
     public static enum Status {
