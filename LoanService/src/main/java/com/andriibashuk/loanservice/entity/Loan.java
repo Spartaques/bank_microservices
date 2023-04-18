@@ -1,12 +1,11 @@
 package com.andriibashuk.loanservice.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.statemachine.annotation.WithStateMachine;
@@ -18,7 +17,14 @@ import java.util.Set;
 
 @NoArgsConstructor
 @Getter
+@Setter
 @Entity
+@ToString
+@Table(name = "loans", indexes = {
+        @Index(name = "idx_loan_userid", columnList = "userId"),
+        @Index(name = "idx_loan_clientid", columnList = "clientId"),
+        @Index(name = "idx_loan_applicationid", columnList = "applicationId")
+})
 @WithStateMachine
 public class Loan extends RepositoryStateMachine implements Serializable {
     @Id
@@ -27,12 +33,10 @@ public class Loan extends RepositoryStateMachine implements Serializable {
 
     @NotNull
     @Column(name = "issued")
-    @Setter
     @Min(value = 0)
     @Max(value = 1000)
     private int amount;
 
-    @NotNull
     @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private ZonedDateTime createdAt;
@@ -42,7 +46,6 @@ public class Loan extends RepositoryStateMachine implements Serializable {
     private ZonedDateTime updatedAt;
 
     @NotNull
-    @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
@@ -71,19 +74,27 @@ public class Loan extends RepositoryStateMachine implements Serializable {
     }
 
     public enum Status {
-        NEW, PROCESSING, APPROVED, ISSUED, CANCELLED, DECLINED, PAID, PROLONGED
+       NEW, PAID, PROLONGED, OVERDUE
     }
 
     public enum Event {
-        START_PROCESSING, APPROVE, ISSUE, PAY, DECLINE, CANCEL, PROLONG
+        PAY, OVERDUE, PROLONG
     }
 
-    @Setter
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "balance_id")
     private Balance balance;
 
-    private Long user_id;
+    @Positive
+    private Long userId;
+
+    @Positive
+    @NotNull
+    private Long clientId;
+
+    @Positive
+    private Long applicationId;
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private Set<Transaction> transactions;
 }
