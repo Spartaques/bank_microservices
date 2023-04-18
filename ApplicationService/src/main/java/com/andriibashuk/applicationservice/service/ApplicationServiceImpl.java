@@ -11,7 +11,7 @@ import com.andriibashuk.applicationservice.response.ApplicationResponse;
 import com.andriibashuk.applicationservice.security.Client;
 import com.andriibashuk.applicationservice.statemachine.ApplicationPersistingStateMachineInterceptor;
 import lombok.extern.java.Log;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.support.MessageBuilder;
@@ -25,8 +25,6 @@ import org.springframework.web.client.RestClientException;
 
 import java.util.Optional;
 
-import static com.andriibashuk.applicationservice.service.UserService.getClient;
-
 @Service
 @Log
 public class ApplicationServiceImpl implements ApplicationService {
@@ -36,14 +34,17 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final StateMachinePersister<Application.Status, Application.Event, String> persister;
     private final ClientService clientService;
 
-    KafkaTemplate<Integer, Object> template;
+    private final KafkaTemplate<Integer, Object> template;
 
-    public ApplicationServiceImpl(ApplicationRepository applicationRepository, StateMachineFactory<Application.Status, Application.Event> factory, ApplicationPersistingStateMachineInterceptor<Application.Status, Application.Event, String> applicationPersistingStateMachineInterceptor, ClientService clientService, KafkaTemplate<Integer, Object> kafkaTemplate) {
+    private final ModelMapper modelMapper;
+
+    public ApplicationServiceImpl(ApplicationRepository applicationRepository, StateMachineFactory<Application.Status, Application.Event> factory, ApplicationPersistingStateMachineInterceptor<Application.Status, Application.Event, String> applicationPersistingStateMachineInterceptor, ClientService clientService, KafkaTemplate<Integer, Object> kafkaTemplate, ModelMapper modelMapper) {
         this.applicationRepository = applicationRepository;
         this.factory = factory;
         this.persister = new DefaultStateMachinePersister<>(applicationPersistingStateMachineInterceptor);
         this.clientService = clientService;
         this.template = kafkaTemplate;
+        this.modelMapper = modelMapper;
     }
 
     @Transactional(transactionManager = "chainedKafkaTransactionManager")
@@ -68,34 +69,15 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new RuntimeException(e);
         }
 
-        ApplicationDto applicationDto = ApplicationDto.builder()
-                .id(application.getId())
-                .requestedAmount(application.getRequestedAmount())
-                .approvedAmount(application.getApprovedAmount())
-                .clientId(application.getClientId())
-                .client(client)
-                .userId(application.getUserId())
-                .status(Application.Status.NEW)
-                .createdAt(application.getCreatedAt())
-                .updatedAt(application.getUpdatedAt())
-                .sourceOfMessage("created")
-                .build();
+        ApplicationDto applicationDto = modelMapper.map(application, ApplicationDto.class);
+        applicationDto.setSourceOfMessage("created");
+        applicationDto.setStatus(Application.Status.NEW);
 
-        log.info("in transaction: "+this.template.inTransaction());
+        log.info("in transaction: "+template.inTransaction());
 
-        this.template.send("application", Math.toIntExact(application.getId()), applicationDto);
+        template.send("application", Math.toIntExact(application.getId()), applicationDto);
 
-        return ApplicationResponse.builder()
-                .id(application.getId())
-                .requestedAmount(application.getRequestedAmount())
-                .approvedAmount(application.getApprovedAmount())
-                .clientId(application.getClientId())
-                .userId(application.getUserId())
-                .status(application.getStatus())
-                .createdAt(application.getCreatedAt())
-                .updatedAt(application.getUpdatedAt())
-                .build();
-
+        return modelMapper.map(application, ApplicationResponse.class);
     }
 
     @Transactional(transactionManager = "chainedKafkaTransactionManager")
@@ -116,16 +98,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         sendEventToStateMachine(id.toString(), Application.Event.APPROVE, application, client);
 
-        return ApplicationResponse.builder()
-                .id(application.getId())
-                .requestedAmount(application.getRequestedAmount())
-                .approvedAmount(application.getApprovedAmount())
-                .clientId(application.getClientId())
-                .userId(application.getUserId())
-                .status(application.getStatus())
-                .createdAt(application.getCreatedAt())
-                .updatedAt(application.getUpdatedAt())
-                .build();
+        return modelMapper.map(application, ApplicationResponse.class);
     }
 
     @Transactional(transactionManager = "chainedKafkaTransactionManager")
@@ -142,38 +115,21 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         sendEventToStateMachine(id.toString(), Application.Event.DENY, application, client);
 
-        return ApplicationResponse.builder()
-                .id(application.getId())
-                .requestedAmount(application.getRequestedAmount())
-                .approvedAmount(application.getApprovedAmount())
-                .clientId(application.getClientId())
-                .userId(application.getUserId())
-                .status(application.getStatus())
-                .createdAt(application.getCreatedAt())
-                .updatedAt(application.getUpdatedAt())
-                .build();
+        return modelMapper.map(application, ApplicationResponse.class);
     }
 
+    @Transactional(transactionManager = "chainedKafkaTransactionManager")
     @Override
     public ApplicationResponse sign(Long id, Client client) {
         Application application = getApplication(id);
 
         sendEventToStateMachine(id.toString(), Application.Event.SIGN, application, client);
 
-        return ApplicationResponse.builder()
-                .id(application.getId())
-                .requestedAmount(application.getRequestedAmount())
-                .approvedAmount(application.getApprovedAmount())
-                .clientId(application.getClientId())
-                .userId(application.getUserId())
-                .status(application.getStatus())
-                .createdAt(application.getCreatedAt())
-                .updatedAt(application.getUpdatedAt())
-                .build();
+        return modelMapper.map(application, ApplicationResponse.class);
     }
 
     private Application getApplication(Long id) {
-        Optional<Application> optionalApplication = this.applicationRepository.findById(id);
+        Optional<Application> optionalApplication = this.applicationRepository.findByIdLocked(id);
         if (optionalApplication.isEmpty()) {
             throw new ApplicationNotFoundException("Application not found", HttpStatus.NOT_FOUND, "APPLICATION_NOT_FOUND");
         }

@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: LoanService
+  config:
+    import: "configserver:http://localhost:8080"
+  kafka:
+    bootstrap-servers: "localhost:9092"
+    producer:
+      transaction-id-prefix: "tx-"
+    consumer:
+      isolation-level: read_committed
+services:
+  ClientAuthService:
+    user: "ClientAuthService"
+    password: "ClientAuthServicePass!#@"
