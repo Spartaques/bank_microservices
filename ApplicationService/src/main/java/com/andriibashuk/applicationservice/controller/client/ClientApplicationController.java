@@ -25,7 +25,7 @@ public class ClientApplicationController {
 
     @PostMapping("/new")
     public ResponseEntity<ApplicationResponse> newApplication(@Valid @RequestBody NewApplicationRequest newApplicationRequest) {
-        return new ResponseEntity<>(applicationService.newApplication(UserService.getClient(), newApplicationRequest.getClientId(), newApplicationRequest.getRequestedAmount()), HttpStatus.CREATED);
+        return new ResponseEntity<>(applicationService.newApplication(UserService.getClient(),  newApplicationRequest.getRequestedAmount()), HttpStatus.CREATED);
     }
 
     @PatchMapping("/sign/{id}")

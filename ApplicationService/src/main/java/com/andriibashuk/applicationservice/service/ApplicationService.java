@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public interface ApplicationService {
-    ApplicationResponse newApplication(Client client, Long clientId, Integer requestedAmount);
+    ApplicationResponse newApplication(Client client, Integer requestedAmount);
 
     ApplicationResponse approve(Long applicationId, Long userId, Integer approvedAmount);
 

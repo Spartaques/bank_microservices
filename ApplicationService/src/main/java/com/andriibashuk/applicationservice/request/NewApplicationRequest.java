@@ -13,10 +13,5 @@ public class NewApplicationRequest {
     @Max(value = 100000)
     @NotNull
     private Integer requestedAmount;
-    @Min(value = 0)
-    @Max(value = 100000)
-    @NotNull
-    // TODO: fix to user principal
-    private Long clientId;
 
 }

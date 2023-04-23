@@ -3,6 +3,8 @@ package com.andriibashuk.applicationservice.statemachine;
 import com.andriibashuk.applicationservice.entity.Application;
 import com.andriibashuk.applicationservice.statemachine.actions.BaseAction;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
@@ -10,11 +12,14 @@ import org.springframework.statemachine.config.builders.StateMachineConfiguratio
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 import org.springframework.statemachine.listener.StateMachineListener;
+import org.springframework.statemachine.persist.DefaultStateMachinePersister;
 
 import java.util.EnumSet;
 
 @Configuration
 public class ApplicationStateMachineConfig {
+    @Autowired
+    ApplicationPersistingStateMachineInterceptor<Application.Status, Application.Event, String> applicationPersistingStateMachineInterceptor;
     @Log
     @Configuration
     @EnableStateMachineFactory(contextEvents = false)
@@ -64,5 +69,10 @@ public class ApplicationStateMachineConfig {
                     .event(Application.Event.SIGN)
                     .action(baseAction);
         }
+    }
+
+    @Bean
+    DefaultStateMachinePersister<Application.Status, Application.Event, String> defaultStateMachinePersister() {
+        return new DefaultStateMachinePersister<>(applicationPersistingStateMachineInterceptor);
     }
 }
