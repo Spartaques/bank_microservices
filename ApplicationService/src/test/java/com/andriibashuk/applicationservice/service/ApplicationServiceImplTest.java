@@ -1,5 +1,6 @@
 package com.andriibashuk.applicationservice.service;
 
+import com.andriibashuk.applicationservice.TestUtil;
 import com.andriibashuk.applicationservice.config.ModelMapperConfig;
 import com.andriibashuk.applicationservice.entity.Application;
 import com.andriibashuk.applicationservice.exception.ClientHttpServiceException;
@@ -8,7 +9,6 @@ import com.andriibashuk.applicationservice.kafka.ApplicationDto;
 import com.andriibashuk.applicationservice.repository.ApplicationRepository;
 import com.andriibashuk.applicationservice.response.ApplicationResponse;
 import com.andriibashuk.applicationservice.security.Client;
-import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,10 +20,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.client.RestClientException;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,35 +44,16 @@ class ApplicationServiceImplTest {
     private final ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
 
 
-    private final Faker faker = new Faker();
-
-    ApplicationServiceImpl applicationService;
+    private ApplicationServiceImpl applicationService;
 
     private Client client;
-    Application application;
+    private Application application;
 
     @BeforeEach
     public void beforeEach() {
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(faker.date().future(1, TimeUnit.DAYS).toInstant(), ZoneId.systemDefault());
-        client = Client.builder()
-                .id(1L)
-                .email(faker.internet().emailAddress())
-                .age((short) 30)
-                .firstName(faker.name().firstName())
-                .lastName(faker.name().lastName())
-                .phone(faker.phoneNumber().phoneNumber())
-                .createdDate(zonedDateTime)
-                .lastModifiedDate(zonedDateTime)
-                .createdBy(1L)
-                .lastModifiedBy(2L)
-                .build();
+        client = TestUtil.client();
 
-        application = Application.builder()
-                .id(1L)
-                .clientId(client.getId())
-                .requestedAmount(500)
-                .status(Application.Status.NEW)
-                .build();
+        application = TestUtil.application(client.getId());
 
         this.applicationService = new ApplicationServiceImpl(applicationRepository, clientService, template, modelMapper, applicationStateMachineService);
     }

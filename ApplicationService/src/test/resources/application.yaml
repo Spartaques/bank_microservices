@@ -1,8 +1,34 @@
 spring:
   application:
     name: ApplicationService
-  profiles:
-    active: default
+  kafka:
+    bootstrap-servers: "localhost:9092"
+    producer:
+      transaction-id-prefix: "tx-"
+    consumer:
+      isolation-level: read_committed
   cloud:
     config:
       enabled: false
+    enable: false
+  datasource:
+    url: "jdbc:mysql://localhost:3306/test_applications"
+    username: "root"
+    password: "Test123!!"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: "true"
+    database-platform: org.hibernate.dialect.MySQLDialect
+services:
+  ClientAuthService:
+    user: "ClientAuthService"
+    password: "ClientAuthServicePass!#@"
+
+eureka:
+  client:
+    enabled: false

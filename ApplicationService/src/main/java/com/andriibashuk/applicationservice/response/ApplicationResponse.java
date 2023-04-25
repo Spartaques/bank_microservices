@@ -2,6 +2,7 @@ package com.andriibashuk.applicationservice.response;
 
 import com.andriibashuk.applicationservice.entity.Application;
 import com.andriibashuk.applicationservice.security.Client;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.time.ZonedDateTime;
 @Builder
 public class ApplicationResponse {
     private Long id;
-    private Integer requestedAmount;
+    @NotNull private Integer requestedAmount;
     private Integer approvedAmount;
     private Long clientId;
     private Long userId;

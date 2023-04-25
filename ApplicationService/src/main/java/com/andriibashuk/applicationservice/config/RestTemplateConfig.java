@@ -7,6 +7,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
@@ -21,12 +22,15 @@ public class RestTemplateConfig {
     private String user;
     @Value("${services.ClientAuthService.password}")
     private String password;
+    @Value("${wiremock.server.port:}")
+    String mockPort;
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() {
         return new RestTemplateBuilder().build();
     }
 
+    @Profile("!test")
     @Bean(name = "client")
     @LoadBalanced
     public RestTemplate clientRestTemplate() {
@@ -37,5 +41,14 @@ public class RestTemplateConfig {
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Basic "+encoding)
                 .setConnectTimeout(Duration.ofMillis(3000))
                 .setReadTimeout(Duration.ofMillis(3000)).build();
+    }
+
+    @Profile("test")
+    @Bean(name = "client")
+    public RestTemplate clientRestTemplateTest() {
+        return new RestTemplateBuilder().rootUri("http://localhost:"+mockPort)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString())
+                .build();
     }
 }
