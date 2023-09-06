@@ -1,6 +1,17 @@
 version: "3.3"
 
 services:
+  database:
+    image: postgres:${POSTGRES_VERSION:-15}-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-bank}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
     container_name: elastic_springboot
@@ -78,7 +89,17 @@ services:
       - "9080:9000"
     environment:
       ZK_HOSTS: "zookeeper:2181"
-
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
 networks:
   elastic:
     driver: bridge
@@ -86,3 +107,5 @@ networks:
 volumes:
   elasticsearch_data:
     driver: local
+  database_data:
+  redis-data:

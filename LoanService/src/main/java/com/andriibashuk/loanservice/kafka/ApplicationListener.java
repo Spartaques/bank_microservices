@@ -1,6 +1,5 @@
 package com.andriibashuk.loanservice.kafka;
 
-import com.andriibashuk.loanservice.entity.Loan;
 import com.andriibashuk.loanservice.model.Application;
 import com.andriibashuk.loanservice.service.LoanService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,8 +12,6 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 @Log

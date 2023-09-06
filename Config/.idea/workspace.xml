@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e1437d3-be5d-4691-96ca-9e42ae73a132" name="Changes" comment="" />
+    <list default="true" id="4e1437d3-be5d-4691-96ca-9e42ae73a132" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,6 +15,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 5
+}]]></component>
   <component name="ProjectId" id="2Nx0mIGU7YyJx3yMHRXu8pAso4m" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -66,6 +72,7 @@
       <workItem from="1682398565309" duration="608000" />
       <workItem from="1682655892055" duration="1072000" />
       <workItem from="1682666765026" duration="102000" />
+      <workItem from="1694000195077" duration="1079000" />
     </task>
     <servers />
   </component>
