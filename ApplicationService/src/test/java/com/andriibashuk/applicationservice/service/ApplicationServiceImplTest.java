@@ -3,6 +3,7 @@ package com.andriibashuk.applicationservice.service;
 import com.andriibashuk.applicationservice.TestUtil;
 import com.andriibashuk.applicationservice.config.ModelMapperConfig;
 import com.andriibashuk.applicationservice.entity.Application;
+import com.andriibashuk.applicationservice.exception.ApplicationNotFoundException;
 import com.andriibashuk.applicationservice.exception.ClientHttpServiceException;
 import com.andriibashuk.applicationservice.http.ClientService;
 import com.andriibashuk.applicationservice.kafka.ApplicationDto;
@@ -20,6 +21,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.client.RestClientException;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -59,10 +62,10 @@ class ApplicationServiceImplTest {
     }
 
     @Nested
-    @DisplayName("new application")
+    @DisplayName("newApplication")
     class NewApplication {
 
-        @DisplayName("positive case")
+        @DisplayName("when correct input then newApplication")
         @Test
         void creates() throws Exception {
             given(clientService.getClientById(client.getId())).willReturn(client);
@@ -73,31 +76,71 @@ class ApplicationServiceImplTest {
             assertThat(applicationResponse).isEqualTo(modelMapper.map(application, ApplicationResponse.class));
             verify(clientService, times(1)).getClientById(client.getId());
         }
+    }
 
-        @DisplayName("throw exception when client not exists")
+    @Nested
+    @DisplayName("approve")
+    class Approve {
+        @DisplayName("when correct input then approve")
         @Test
-        void assertThrowsExceptionWhenClientNotExists() throws Exception{
-            given(clientService.getClientById(client.getId())).willThrow(new RestClientException(""));
-            ClientHttpServiceException e = assertThrows(ClientHttpServiceException.class, () -> {
-                applicationService.newApplication(client, application.getRequestedAmount());
+        void whenCorrectInputThenApprove()
+        {
+            given(clientService.getClientById(client.getId())).willReturn(client);
+            given(applicationRepository.findByIdLocked(1L)).willReturn(Optional.of(application));
+            given(applicationRepository.save(any(Application.class))).willReturn(application);
+            doNothing().when(applicationStateMachineService).sendEvent(application, client, Application.Event.APPROVE);
+            Application expectedApplication = Application.builder().id(1L).userId(1L).approvedAmount(300).requestedAmount(application.getRequestedAmount()).clientId(application.getClientId()).status(Application.Status.NEW).build();
+            ApplicationResponse applicationResponse = applicationService.approve(1L, 1L, 300);
+            verify(applicationStateMachineService, times(1)).sendEvent(application, client, Application.Event.APPROVE);
+            verify(applicationRepository, times(1)).save(any(Application.class));
+            verify(applicationRepository, times(1)).findByIdLocked(1L);
+            assertThat(applicationResponse).isEqualTo(modelMapper.map(expectedApplication, ApplicationResponse.class));
+        }
+        @DisplayName("when not found application throws exception")
+        @Test
+        void whenNotFoundApplicationThenThrowsException()
+        {
+            given(applicationRepository.findByIdLocked(1L)).willReturn(Optional.empty());
+            ApplicationNotFoundException e = assertThrows(ApplicationNotFoundException.class, () -> {
+                applicationService.approve(1L, 1L, 300);
             });
-            assertThat(e.getErrorCode().equals("CLIENT_SERVICE_NOT_AVAILABLE"));
-            assertThat(e.getHttpStatus().equals(HttpStatus.BAD_GATEWAY));
-            assertThat(e.getMessage().equals("Something went wrong"));
+            assertThat(e.getErrorCode()).isEqualTo("APPLICATION_NOT_FOUND");
+            assertThat(e.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(e.getMessage()).isEqualTo("Application not found");
         }
     }
 
-    @Test
-    void approve() {
+    @Nested
+    @DisplayName("deny")
+    class Deny {
+        @Test
+        @DisplayName("when correct input then deny")
+        void whenCorrectInputThenDeny()
+        {
+            given(clientService.getClientById(client.getId())).willReturn(client);
+            given(applicationRepository.findByIdLocked(1L)).willReturn(Optional.of(application));
+            doNothing().when(applicationStateMachineService).sendEvent(application, client, Application.Event.DENY);
+            ApplicationResponse applicationResponse = applicationService.deny(1L);
+            verify(applicationStateMachineService, times(1)).sendEvent(application, client, Application.Event.DENY);
+            verify(applicationRepository, times(1)).findByIdLocked(1L);
+            assertThat(applicationResponse).isEqualTo(modelMapper.map(application, ApplicationResponse.class));
+        }
     }
 
-    @Test
-    void deny() {
+    @Nested
+    @DisplayName("sign")
+    class Sign
+    {
+        @Test
+        @DisplayName("when correct input then sign")
+        void whenCorrectInputThenSign()
+        {
+            given(applicationRepository.findByIdLocked(1L)).willReturn(Optional.of(application));
+            doNothing().when(applicationStateMachineService).sendEvent(application, client, Application.Event.SIGN);
+            ApplicationResponse applicationResponse = applicationService.sign(1L, client);
+            verify(applicationStateMachineService, times(1)).sendEvent(application, client, Application.Event.SIGN);
+            verify(applicationRepository, times(1)).findByIdLocked(1L);
+            assertThat(applicationResponse).isEqualTo(modelMapper.map(application, ApplicationResponse.class));
+        }
     }
-
-    @Test
-    void sign() {
-    }
-
-
 }

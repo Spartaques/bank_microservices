@@ -41,12 +41,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional(transactionManager = "chainedKafkaTransactionManager")
     @Override
     public ApplicationResponse newApplication(Client client,  Integer requestedAmount) {
-        try {
-            clientService.getClientById(client.getId());
-        } catch (RestClientException exception) {
-            log.warning("Client service exception: "+ exception.getMessage());
-            throw new ClientHttpServiceException("Something went wrong", HttpStatus.BAD_GATEWAY, "CLIENT_SERVICE_NOT_AVAILABLE");
-        }
+        clientService.getClientById(client.getId());
         Application application = new Application();
         application.setRequestedAmount(requestedAmount);
         application.setClientId(client.getId());
@@ -56,9 +51,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         ApplicationDto applicationDto = modelMapper.map(application, ApplicationDto.class);
         applicationDto.setSourceOfMessage("created");
         applicationDto.setStatus(Application.Status.NEW);
-
         template.send("application", Math.toIntExact(application.getId()), applicationDto);
-
         return modelMapper.map(application, ApplicationResponse.class);
     }
 
@@ -66,20 +59,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationResponse approve(Long id, Long userId, Integer approvedAmount) {
         Application application = getApplication(id);
-        Client client;
-        try {
-            client = clientService.getClientById(application.getClientId());
-        } catch (RestClientException exception) {
-            log.warning("Client service exception: "+ exception.getMessage());
-            throw new ClientHttpServiceException("Smth went wrong", HttpStatus.BAD_GATEWAY, "CLIENT_SERVICE_NOT_AVAILABLE");
-        }
-        log.info("applicationID "+application.getId());
+        Client client = clientService.getClientById(application.getClientId());
         application.setApprovedAmount(approvedAmount);
         application.setUserId(userId);
         applicationRepository.save(application);
-
         applicationStateMachineService.sendEvent(application, client, Application.Event.APPROVE);
-
         return modelMapper.map(application, ApplicationResponse.class);
     }
 
@@ -87,16 +71,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationResponse deny(Long id) {
         Application application = getApplication(id);
-        Client client;
-        try {
-            client = clientService.getClientById(application.getClientId());
-        } catch (RestClientException exception) {
-            log.warning("Client service exception: "+ exception.getMessage());
-            throw new ClientHttpServiceException("Smth went wrong", HttpStatus.BAD_GATEWAY, "CLIENT_SERVICE_NOT_AVAILABLE");
-        }
-
+        Client client = clientService.getClientById(application.getClientId());
         applicationStateMachineService.sendEvent(application, client, Application.Event.DENY);
-
         return modelMapper.map(application, ApplicationResponse.class);
     }
 
@@ -104,9 +80,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationResponse sign(Long id, Client client) {
         Application application = getApplication(id);
-
         applicationStateMachineService.sendEvent(application, client, Application.Event.SIGN);
-
         return modelMapper.map(application, ApplicationResponse.class);
     }
 
