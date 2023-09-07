@@ -1,5 +1,6 @@
 package com.andriibashuk.userauthservice.request;
 
+import com.andriibashuk.userauthservice.entity.Address;
 import com.andriibashuk.userauthservice.entity.User;
 import com.andriibashuk.userauthservice.validation.*;
 import jakarta.validation.constraints.NotBlank;
@@ -53,8 +54,10 @@ public class RegisterUserRequest {
     @PositiveOrZero
     private Short age;
     @NotNull
-    @GenderConstraint(array = {User.Gender.MALE, User.Gender.FEMALE})
+    @GenderValid(array = {User.Gender.MALE, User.Gender.FEMALE})
     private String gender;
     @NotNull
     private List<Long> rolesIds;
+    @AddressesValid
+    private List<Address> addresses;
 }

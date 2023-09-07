@@ -6,10 +6,10 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.Arrays;
 
-public class GenderConstraintValidator implements ConstraintValidator<GenderConstraint, Object> {
+public class GenderValidValidator implements ConstraintValidator<GenderValid, Object> {
     private User.Gender[] array;
     @Override
-    public void initialize(GenderConstraint constraintAnnotation) {
+    public void initialize(GenderValid constraintAnnotation) {
         this.array = constraintAnnotation.array();
     }
 

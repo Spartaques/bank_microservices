@@ -7,10 +7,10 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = GenderConstraintValidator.class)
+@Constraint(validatedBy = GenderValidValidator.class)
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface GenderConstraint {
+public @interface GenderValid {
     User.Gender[] array();
     String message() default "Invalid gender Should be one of {array}";
     Class<?>[] groups() default {};
