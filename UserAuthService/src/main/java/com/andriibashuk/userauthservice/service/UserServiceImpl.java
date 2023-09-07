@@ -90,6 +90,11 @@ public class UserServiceImpl implements UserService {
         return jwtUtil.generateToken(user, privileges);
     }
 
+    @Override
+    public ArrayList<User> getAll() {
+        return null;
+    }
+
 
     private Collection<? extends GrantedAuthority> getAuthorities(
             Collection<Role> roles) {

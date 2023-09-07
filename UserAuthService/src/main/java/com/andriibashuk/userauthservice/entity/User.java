@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -116,6 +117,9 @@ public class User implements UserDetails {
         MALE,
         FEMALE
     }
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Address> addresses;
 
     @Override
     public boolean equals(Object o) {

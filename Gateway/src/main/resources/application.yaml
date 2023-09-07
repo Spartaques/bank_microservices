@@ -21,6 +21,28 @@ spring:
               args:
                 name: ClientAuthService
                 fallbackUri: forward:/fallback
+        - id: UserService
+          uri: lb://UserAuthService
+          predicates:
+            - Path=/user/**
+          filters:
+            - RewritePath=/user(?<segment>/?.*), $\{segment}
+            - name: JwtUserAuth
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
+            - name: CircuitBreaker
+              args:
+                name: UserService
+                fallbackUri: forward:/fallback
+            - name: Retry
+              args:
+                retries: 3
+                methods: GET
+                backoff:
+                  firstBackoff: 50ms
+                  maxBackoff: 500ms
         - id: UserAuthService
           uri: lb://UserAuthService
           predicates:

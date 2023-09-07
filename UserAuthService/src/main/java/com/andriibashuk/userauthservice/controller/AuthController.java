@@ -1,7 +1,8 @@
 package com.andriibashuk.userauthservice.controller;
 
+import com.andriibashuk.userauthservice.entity.User;
 import com.andriibashuk.userauthservice.request.LoginRequest;
-import com.andriibashuk.userauthservice.request.RegisterClientRequest;
+import com.andriibashuk.userauthservice.request.RegisterUserRequest;
 import com.andriibashuk.userauthservice.response.UserResponse;
 import com.andriibashuk.userauthservice.service.UserService;
 import jakarta.validation.Valid;
@@ -28,14 +29,14 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterClientRequest request) {
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterUserRequest request) {
         log.info("Request for register user with data"+request);
         return new ResponseEntity<>(this.userService.register(request.getFirstName(),
                 request.getLastName(),
                 request.getEmail(),
                 request.getPassword(),
                 request.getAge(),
-                request.getGender(),
+                User.Gender.valueOf(request.getGender()),
                 request.getRolesIds()),
                 HttpStatus.OK);
     }

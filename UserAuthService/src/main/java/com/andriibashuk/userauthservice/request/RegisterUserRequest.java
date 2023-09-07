@@ -1,9 +1,7 @@
 package com.andriibashuk.userauthservice.request;
 
 import com.andriibashuk.userauthservice.entity.User;
-import com.andriibashuk.userauthservice.validation.PasswordMatches;
-import com.andriibashuk.userauthservice.validation.UserExistsInDatabaseByEmail;
-import com.andriibashuk.userauthservice.validation.ValidEmail;
+import com.andriibashuk.userauthservice.validation.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -16,13 +14,12 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @PasswordMatches(field = "password", fieldMatch = "matchingPassword")
-public class RegisterClientRequest {
+public class RegisterUserRequest {
     @Length(min = 3, max = 75)
     @NotBlank
     @NotEmpty
@@ -56,7 +53,8 @@ public class RegisterClientRequest {
     @PositiveOrZero
     private Short age;
     @NotNull
-    private User.Gender gender;
+    @GenderConstraint(array = {User.Gender.MALE, User.Gender.FEMALE})
+    private String gender;
     @NotNull
     private List<Long> rolesIds;
 }
