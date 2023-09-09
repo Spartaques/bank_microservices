@@ -30,8 +30,8 @@ spring:
             - name: JwtUserAuth
             - name: RequestRateLimiter
               args:
-                redis-rate-limiter.replenishRate: 1
-                redis-rate-limiter.burstCapacity: 1
+                redis-rate-limiter.replenishRate: 10000
+                redis-rate-limiter.burstCapacity: 10000
             - name: CircuitBreaker
               args:
                 name: UserService
@@ -51,8 +51,8 @@ spring:
             - RewritePath=/auth/user(?<segment>/?.*), $\{segment}
             - name: RequestRateLimiter
               args:
-                redis-rate-limiter.replenishRate: 1
-                redis-rate-limiter.burstCapacity: 1
+                redis-rate-limiter.replenishRate: 10000
+                redis-rate-limiter.burstCapacity: 10000
             - name: CircuitBreaker
               args:
                 name: UserAuthService
