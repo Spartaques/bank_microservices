@@ -14,9 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -83,6 +81,28 @@ public class User implements UserDetails {
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Audit> audits = new LinkedHashSet<>();
+
+    public void addAudits(Set<Audit> audits)
+    {
+        for (Audit audit : audits) {
+            this.audits.add(audit);
+            audit.setUser(this);
+        }
+    }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PhoneNumber> phoneNumbers = new LinkedHashSet<>();
+
+    public void addPhoneNumbers(Set<PhoneNumber> phoneNumbers)
+    {
+        for (PhoneNumber phoneNumber : phoneNumbers) {
+            this.phoneNumbers.add(phoneNumber);
+            phoneNumber.setUser(this);
+        }
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -113,13 +133,21 @@ public class User implements UserDetails {
         return true;
     }
 
-    public static enum Gender {
+    public enum Gender {
         MALE,
         FEMALE
     }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Address> addresses;
+    private Set<Address> addresses = new LinkedHashSet<>();
+
+    public void addAddresses(Set<Address> addresses)
+    {
+        for (Address address : addresses) {
+            this.addresses.add(address);
+            address.setUser(this);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {

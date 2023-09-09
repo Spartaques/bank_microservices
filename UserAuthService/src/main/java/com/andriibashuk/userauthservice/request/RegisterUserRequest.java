@@ -1,7 +1,6 @@
 package com.andriibashuk.userauthservice.request;
 
-import com.andriibashuk.userauthservice.entity.Address;
-import com.andriibashuk.userauthservice.entity.User;
+import com.andriibashuk.userauthservice.entity.*;
 import com.andriibashuk.userauthservice.validation.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -15,6 +14,7 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -57,7 +57,13 @@ public class RegisterUserRequest {
     @GenderValid(array = {User.Gender.MALE, User.Gender.FEMALE})
     private String gender;
     @NotNull
-    private List<Long> rolesIds;
+    private Set<Long> rolesIds;
     @AddressesValid
-    private List<Address> addresses;
+    private Set<Address> addresses;
+    @PhoneNumbersValid
+    private Set<PhoneNumber> phoneNumbers;
+    @AuditsValid
+    private Set<Audit> audits;
+    @CommentsValid
+    private Set<UserComment> comments;
 }

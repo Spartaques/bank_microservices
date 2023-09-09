@@ -1,15 +1,15 @@
 package com.andriibashuk.userauthservice.service;
 
-import com.andriibashuk.userauthservice.entity.Privilege;
-import com.andriibashuk.userauthservice.entity.Role;
-import com.andriibashuk.userauthservice.entity.User;
+import com.andriibashuk.userauthservice.entity.*;
 import com.andriibashuk.userauthservice.exception.UserNotFoundException;
 import com.andriibashuk.userauthservice.exception.WrongRoleIdsException;
 import com.andriibashuk.userauthservice.exception.WrongRolesCountException;
+import com.andriibashuk.userauthservice.repository.UserCommentRepository;
 import com.andriibashuk.userauthservice.repository.RoleRepository;
 import com.andriibashuk.userauthservice.repository.UserRepository;
 import com.andriibashuk.userauthservice.response.UserResponse;
 import com.andriibashuk.userauthservice.security.JWTUtil;
+import org.modelmapper.ModelMapper;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,20 +28,34 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     RoleRepository roleRepository;
+    private final UserCommentRepository commentRepository;
+    private final ModelMapper modelMapper;
 
     JWTUtil jwtUtil;
 
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, JWTUtil jwtUtil, RoleRepository roleRepository) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, JWTUtil jwtUtil, RoleRepository roleRepository, UserCommentRepository commentRepository, ModelMapper modelMapper) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.roleRepository = roleRepository;
+        this.commentRepository = commentRepository;
+        this.modelMapper = modelMapper;
     }
     @Transactional
     @Override
-    public UserResponse register(String firstName, String lastName, String email, String password, Short age, User.Gender gender, List<Long> rolesIds) {
+    public UserResponse register(String firstName,
+                                 String lastName,
+                                 String email,
+                                 String password,
+                                 Short age,
+                                 User.Gender gender,
+                                 Set<Long> rolesIds,
+                                 Set<Address> addresses,
+                                 Set<PhoneNumber> phoneNumbers,
+                                 Set<UserComment> comments,
+                                 Set<Audit> audits) {
         List<Role> roles = roleRepository.findByIdIn(rolesIds);
-        if(rolesIds.size() == 0) {
+        if(rolesIds.isEmpty()) {
             throw new WrongRolesCountException("Wrong roles", HttpStatus.BAD_REQUEST, "WRONG_ROLES_COUNT");
         }
         if(rolesIds.size() != roles.size()) {
@@ -56,20 +70,15 @@ public class UserServiceImpl implements UserService {
         user.setGender(gender);
         user.setPassword(passwordEncoder.encode(password));
         user.setRoles(roles);
+        user.addAddresses(addresses);
+        user.addPhoneNumbers(phoneNumbers);
+        user.addAudits(audits);
+        commentRepository.saveAll(comments);
+        commentRepository.flush();
         userRepository.save(user);
+        userRepository.flush();
         log.info("User created in database");
-
-        return UserResponse
-                .builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .age(user.getAge())
-                .gender(user.getGender())
-                .createdDate(user.getCreatedDate())
-                .lastModifiedDate(user.getLastModifiedDate())
-                .lastModifiedBy(user.getLastModifiedBy())
-                .createdBy(user.getCreatedBy()).build();
+        return modelMapper.map(user, UserResponse.class);
     }
 
     @Transactional

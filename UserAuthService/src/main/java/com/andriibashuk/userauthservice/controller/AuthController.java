@@ -37,7 +37,11 @@ public class AuthController {
                 request.getPassword(),
                 request.getAge(),
                 User.Gender.valueOf(request.getGender()),
-                request.getRolesIds()),
+                request.getRolesIds(),
+                request.getAddresses(),
+                request.getPhoneNumbers(),
+                request.getComments(),
+                request.getAudits()),
                 HttpStatus.OK);
     }
 }

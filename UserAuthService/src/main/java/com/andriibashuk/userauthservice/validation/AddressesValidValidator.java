@@ -6,16 +6,13 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class AddressesValidValidator implements ConstraintValidator<AddressesValid, Object> {
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        if (value instanceof List<?>) {
-            List<?> valueList = (List<?>) value;
-            if (!valueList.isEmpty() && valueList.get(0) instanceof Address) {
-                ArrayList<Address> addressList = (ArrayList<Address>) value;
-                return addressList.stream().allMatch(address -> address.getCity() != null && address.getState() != null && address.getStreet() != null);
-            }
+        if (value instanceof Set<?> && !((Set<?>) value).isEmpty()) {
+            return ((Set<?>) value).stream().map(item -> (Address) item).allMatch(address -> address.getCity() != null && address.getState() != null && address.getStreet() != null);
         }
 
         return false;
