@@ -13,10 +13,4 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
-    @GetMapping("/users")
-    public String index()
-    {
-        return "132";
-    }
 }

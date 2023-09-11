@@ -3,15 +3,16 @@ package com.andriibashuk.userauthservice.controller;
 import com.andriibashuk.userauthservice.entity.User;
 import com.andriibashuk.userauthservice.request.LoginRequest;
 import com.andriibashuk.userauthservice.request.RegisterUserRequest;
+import com.andriibashuk.userauthservice.request.UsersAllRequest;
 import com.andriibashuk.userauthservice.response.UserResponse;
 import com.andriibashuk.userauthservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Log
@@ -43,5 +44,11 @@ public class AuthController {
                 request.getComments(),
                 request.getAudits()),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserResponse>> getAll(@Valid UsersAllRequest request)
+    {
+        return new ResponseEntity<>(userService.getAll(request.getId()), HttpStatus.OK);
     }
 }

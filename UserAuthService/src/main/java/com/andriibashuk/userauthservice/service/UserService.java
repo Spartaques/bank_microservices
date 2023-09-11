@@ -22,5 +22,5 @@ public interface UserService {
 
     String login(String email, String password);
 
-    ArrayList<User> getAll();
+    List<UserResponse> getAll(Integer id);
 }

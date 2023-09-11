@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Log
@@ -100,8 +101,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ArrayList<User> getAll() {
-        return null;
+    public List<UserResponse> getAll(Integer id) {
+        return userRepository.getAll(id).stream().map((element) -> modelMapper.map(element, UserResponse.class)).collect(Collectors.toList());
     }
 
 

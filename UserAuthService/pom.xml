@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>org.andriibashuk</groupId>
 			<artifactId>common</artifactId>
-			<version>1.0.8</version>
+			<version>1.0.11</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
@@ -34,5 +34,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 </project>

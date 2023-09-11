@@ -13,7 +13,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
     private static final String[] WHILE_LIST_URLS = {
             "/register",
-            "/login"
+            "/login",
+            "/users"
     };
     private final UserHeadersAuthenticationFilter userHeadersAuthenticationFilter;
 
